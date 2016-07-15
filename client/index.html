@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en" ng-app>
+  <head>
+    <title>Cloud Class Schedule</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bootstrap-material-design.min.css">
+    <link rel="stylesheet" href="/css/ripples.min.css">
+    <link rel="stylesheet" href="/css/material-icons.css">
+    <link rel="stylesheet" href="/css/roboto.min.css">
+    <link rel="stylesheet" href="/css/custom.css">
+  </head>
+  <body>
+    <div class="container" ng-controller="ScheduleController">
+      <div class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Cloud Class Schedule</a>
+          </div>
+          <div class="navbar-collapse collapse navbar-responsive-collapse">
+            <ul class="nav navbar-nav">
+              <li><a href="#" title="Start" data-toggle="modal" data-target="#start"><i class="material-icons">&#xE8AC;</i></a></li>
+            </ul>
+            <div id="spinner" class="sk-cube-grid">
+              <div class="sk-cube sk-cube1"></div>
+              <div class="sk-cube sk-cube2"></div>
+              <div class="sk-cube sk-cube3"></div>
+              <div class="sk-cube sk-cube4"></div>
+              <div class="sk-cube sk-cube5"></div>
+              <div class="sk-cube sk-cube6"></div>
+              <div class="sk-cube sk-cube7"></div>
+              <div class="sk-cube sk-cube8"></div>
+              <div class="sk-cube sk-cube9"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row" id="content-description">
+        <div class="jumbotron">
+          <h1>Cloud Class Schedule</h1>
+          <p style="text-align: center">Uma aplicação para gerar a grade de horários da Computação - UFPel, utilizando como estratégia um algoritmo genético.</p>
+        </div>
+      </div>
+      <div class="row" style="width: 950px; margin: auto; text-align: center;">
+        <table id="results" class="table table-striped table-bordered" style="display: none;">
+          <thead>
+            <tr>
+              <th style="width: 50px; text-align: center">Generation</th>
+              <th style="width: 50px; text-align: center">Fitness</th>
+              <th style="width: 800px; text-align: center">Solutions</th>
+              <th style="width: 50px; text-align: center">Validation</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="msg in messages">
+              <td style="text-align: center; vertical-align: middle;" ng-bind="msg.generation"></td>
+              <td style="text-align: center; vertical-align: middle;" ng-bind="msg.fitness"></td>
+              <td style="text-align: center; vertical-align: middle;">
+                <span ng-repeat="(cid, course) in msg.courses">
+                  <button type="button" class="btn btn-primary btn-raised btn-xs" data-toggle="modal" data-target="#g{{msg.id}}c{{cid}}">
+                    {{course}}
+                  </button>
+                </span>
+              </td>
+              <td style="text-align: center; vertical-align: middle;">
+                <button type="button" class="btn btn-primary btn-fab btn-fab-mini" data-toggle="modal" data-target="#gv{{msg.id}}">
+                  <i class="material-icons">&#xE000;</i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div id="solutions" class="row"></div>
+      <!-- Modal Start Settings -->
+      <div class="modal fade" id="start" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title">Start Settings</h4>
+            </div>
+            <div class="modal-body">
+              <form class="form-horizontal">
+                <fieldset>
+                  <legend>Problem</legend>
+                  <div class="form-group">
+                    <label for="disciplines" class="col-md-2 control-label">Disciplines:</label>
+                    <div class="col-md-4">
+                      <input type="text" readonly="" class="form-control" placeholder="Browse...">
+                      <input type="file" id="disciplines">
+                    </div>
+                    <label for="labs" class="col-md-2 control-label">Labs:</label>
+                    <div class="col-md-3">
+                      <input type="number" class="form-control" id="labs" value="4" min="0">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="professores" class="col-md-2 control-label">Professores:</label>
+                    <div class="col-md-4">
+                      <input type="text" readonly="" class="form-control" placeholder="Browse...">
+                      <input type="file" id="professores">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="" class="col-md-2 control-label">Time:</label>
+                    <div class="col-md-10">
+                      <div class="checkbox">
+                        <label>
+                          <input type="checkbox" id="time_08h" checked="checked"> 08h
+                        </label>
+                        <label>
+                          <input type="checkbox" id="time_10h" checked="checked"> 10h
+                        </label>
+                        <label>
+                          <input type="checkbox" id="time_13h" checked="checked"> 13h
+                        </label>
+                        <label>
+                          <input type="checkbox" id="time_15h" checked="checked"> 15h
+                        </label>
+                        <label>
+                          <input type="checkbox" id="time_19h"> 19h
+                        </label>
+                        <label>
+                          <input type="checkbox" id="time_21h"> 21h
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group"></div>
+                </fieldset>
+                <fieldset>
+                  <legend>Genetic Algorithm</legend>
+                  <div class="form-group">
+                    <label for="iterations" class="col-md-2 control-label">Iterations:</label>
+                    <div class="col-md-4">
+                      <input type="number" class="form-control" id="iterations" value="10000" min="0">
+                    </div>
+                    <label for="crossover" class="col-md-2 control-label">Crossover:</label>
+                    <div class="col-md-3">
+                      <input type="number" class="form-control" id="crossover" value="0.5" min="0" max="1" step="0.1">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="size" class="col-md-2 control-label">Size:</label>
+                    <div class="col-md-4">
+                      <input type="number" class="form-control" id="size" value="5" min="0">
+                    </div>
+                    <label for="mutation" class="col-md-2 control-label">Mutation:</label>
+                    <div class="col-md-3">
+                      <input type="number" class="form-control" id="mutation" value="0.5" min="0" max="1" step="0.1">
+                    </div>
+                  </div>
+                </fieldset>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+              <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="send()">Start</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/material.min.js"></script>
+    <script src="/js/ripples.min.js"></script>
+    <script src="/js/angular.min.js"></script>
+    <script src="/js/main.js"></script>
+    <audio id="sound">
+      <source src="sound.mp3" type="audio/mpeg">
+    </audio>
+  </body>
+</html>

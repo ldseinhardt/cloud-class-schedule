@@ -1,0 +1,12 @@
+{
+  "name": "cloud-class-schedule",
+  "version": "0.0.1",
+  "description": "Uma aplicação para gerar a grade de horários da Computação - UFPel, utilizando como estratégia um algoritmo genético.",
+  "main": "class-schedule.js",
+  "dependencies": {
+    "d3": "^3.5.10",
+    "express": "^4.13.3",
+    "genetic-js": "^0.1.14",
+    "socket.io": "~0.9.14"
+  }
+}
